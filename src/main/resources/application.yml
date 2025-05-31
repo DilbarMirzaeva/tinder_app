@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tinder_app
+    username: postgres
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
