@@ -1,35 +1,35 @@
-package az.turing.tinderdemo.domain.entity;
+    package az.turing.tinderdemo.domain.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+    import jakarta.persistence.*;
+    import jakarta.validation.constraints.NotNull;
+    import lombok.AllArgsConstructor;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+    import java.time.LocalDateTime;
 
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "matches")
-public class Match {
+    @Entity
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Table(name = "matches")
+    public class Match {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
-    @SequenceGenerator(name = "seq",sequenceName = "seq", allocationSize = 1)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
+        @SequenceGenerator(name = "seq",sequenceName = "seq", allocationSize = 1)
+        private Long id;
 
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user1_id")
-    private User user1;
+        @ManyToOne(optional = false)
+        @JoinColumn(name = "user1_id")
+        private User user1;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user2_id")
-    private User user2;
+        @ManyToOne(optional = false)
+        @JoinColumn(name = "user2_id")
+        private User user2;
 
-    @NotNull
-    private LocalDateTime matchedAt;
+        @NotNull
+        private LocalDateTime matchedAt;
 
-}
+    }

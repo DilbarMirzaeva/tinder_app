@@ -1,8 +1,8 @@
 package az.turing.tinderdemo.domain.entity;
 
-import az.turing.tinderdemo.domain.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,10 +29,7 @@ public class User {
     @Column(unique=true,nullable=false)
     private String password;
 
-    private String bio;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private Gender gender;
+    @NotBlank(message = "age cannot be empty")
+    private Integer age;
 
 }

@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeRequest {
+public class MessageSendRequest {
 
-    @NotBlank(message = "username cannot be empty")
-    private String likedUsername;
+    @NotBlank(message = "Username cannot be empty ")
+    private String username;
+
+    @NotBlank(message = "Content cannot be empty")
+    private String content;
 
 }

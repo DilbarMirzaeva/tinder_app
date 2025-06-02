@@ -21,33 +21,31 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
     @SequenceGenerator(name = "seq",sequenceName = "seq", allocationSize = 1)
-    Long id;
+    private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id")
-    User fromUser;
+    private User fromUser;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id")
-    User toUser;
+    private User toUser;
 
-    @NotBlank(message = "there has not content")
-    String content;
+    @NotBlank(message = "no content")
+    private String content;
 
     @NotNull
-    LocalDateTime sentAt;
+    private LocalDateTime sentAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_status", nullable = false)
     @NotNull
-    MessageStatus messageStatus;
+    private MessageStatus messageStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "request_status")
-    RequestStatus requestStatus;
+    private RequestStatus requestStatus;
 
     @NotNull
-    Boolean isMatch;
-
-
+    private Boolean isMatch;
 }
