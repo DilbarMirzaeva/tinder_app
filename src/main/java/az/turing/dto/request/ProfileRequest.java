@@ -14,7 +14,8 @@ public class ProfileRequest {
 
     @NotNull
     @Valid
-    private UserCreateRequest userCreateRequest;
+    private
+    UserRequest userRequest;
 
     private String photoUrl;
 

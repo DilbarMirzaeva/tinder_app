@@ -3,7 +3,7 @@ package az.turing.service.impl;
 import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
 import az.turing.domain.repository.UserRepo;
-import az.turing.dto.request.UserCreateRequest;
+import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.AlreadyExistsException;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponse saveUser(UserCreateRequest user) {
+    public UserResponse saveUser(UserRequest user) {
         if(userRepo.existsUserByUsername(user.getUsername())){
             throw new AlreadyExistsException("User with username " + user.getUsername() + " already exists");
         }
@@ -62,6 +62,14 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findByUsername(name)
                 .orElseThrow(()->new NotFoundException("User with name " + name + " not found"));
         return  userMapper.toDto(user);
+    }
+
+    @Override
+    public UserResponse updateUser(UserRequest userRequest) {
+        User user=userMapper.toEntityFromRequest(userRequest);
+        user.setStatus(Status.ACTIVE);
+        User savedUser = userRepo.save(user);
+        return  userMapper.toDto(savedUser);
     }
 
     public User userFindById(Long id) {

@@ -52,6 +52,14 @@ public class ProfileServiceImpl implements ProfileService {
         profileRepo.delete(profile);
     }
 
+    @Override
+    public ProfileResponse updateProfile(ProfileRequest profileRequest) {
+        Profile profile=profileMapper.toEntityFromRequest(profileRequest);
+        profile.setStatus(Status.ACTIVE);
+        Profile savedProfile = profileRepo.save(profile);
+        return profileMapper.toDto(savedProfile);
+    }
+
     public Profile profileFindById(Long id) {
         return profileRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile with id: " + id + " not found"));

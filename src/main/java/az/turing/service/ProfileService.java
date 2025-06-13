@@ -11,5 +11,6 @@ public interface ProfileService {
     ProfileResponse getProfileById(Long id);
     List<ProfileResponse> getAllProfiles();
     void deleteProfileById(Long id);
+    ProfileResponse updateProfile(ProfileRequest profileRequest);
 
 }
