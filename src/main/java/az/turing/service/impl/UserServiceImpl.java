@@ -1,9 +1,11 @@
 package az.turing.service.impl;
 
 import az.turing.domain.entity.User;
+import az.turing.domain.enums.Status;
 import az.turing.domain.repository.UserRepo;
 import az.turing.dto.request.UserCreateRequest;
 import az.turing.dto.response.UserResponse;
+import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.AlreadyExistsException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.UserMapper;
@@ -27,28 +29,32 @@ public class UserServiceImpl implements UserService {
             throw new AlreadyExistsException("User with username " + user.getUsername() + " already exists");
         }
         User userEntity =userMapper.toEntityFromRequest(user);
+        userEntity.setStatus(Status.ACTIVE);
         User savedUser = userRepo.save(userEntity);
         return  userMapper.toDto(savedUser);
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepo.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+        return userRepo.findAllByStatus(Status.ACTIVE).stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public UserResponse getUserById(Long id) {
-        User user = userRepo.findById(id)
-                .orElseThrow(()->new NotFoundException("User with id " + id + " not found"));
+        User user = userFindById(id);
         return  userMapper.toDto(user);
     }
 
     @Override
     public void deleteUserById(Long id) {
-        if(userRepo.existsById(id)){
-            throw new NotFoundException("User with id " + id + " not found");
+        User user = userFindById(id);
+        if(user.getStatus() == Status.DELETED){
+            throw new AlreadyDeletedException("User with id " + id + " already deleted");
         }
-        userRepo.deleteById(id);
+        user.setStatus(Status.DELETED);
+        userRepo.save(user);
     }
 
     @Override
@@ -56,5 +62,10 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findByUsername(name)
                 .orElseThrow(()->new NotFoundException("User with name " + name + " not found"));
         return  userMapper.toDto(user);
+    }
+
+    public User userFindById(Long id) {
+        return userRepo.findById(id)
+                .orElseThrow(()->new NotFoundException("User with id " + id + " not found"));
     }
 }

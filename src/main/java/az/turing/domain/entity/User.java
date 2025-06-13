@@ -1,5 +1,6 @@
 package az.turing.domain.entity;
 
+import az.turing.domain.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,5 +34,8 @@ public class User {
     @NotNull
     @Column(nullable = false)
     private Integer age;
+
+    @Column(nullable = false)
+    private Status status;
 
 }
