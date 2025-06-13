@@ -3,6 +3,7 @@ package az.turing.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,14 +23,15 @@ public class User {
     @Column(unique=true,nullable=false)
     private String username;
 
-    @Email
+    @NotNull
     @Column(unique=true,nullable=false)
     private String email;
 
     @Column(unique=true,nullable=false)
     private String password;
 
-    @NotBlank(message = "age cannot be empty")
+    @NotNull
+    @Column(nullable = false)
     private Integer age;
 
 }

@@ -22,7 +22,7 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "photo_url", nullable = false)
+    @Column(name = "photo_url")
     private String photoUrl;
 
     @Column(nullable = false)

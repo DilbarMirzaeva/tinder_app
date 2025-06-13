@@ -31,15 +31,15 @@ public class Message {
     @JoinColumn(name = "to_user_id")
     private User toUser;
 
-    @NotBlank(message = "no content")
+    @NotNull
     private String content;
 
     @NotNull
     private LocalDateTime sentAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "message_status", nullable = false)
     @NotNull
+    @Column(name = "message_status", nullable = false)
     private MessageStatus messageStatus;
 
     @Enumerated(EnumType.STRING)
