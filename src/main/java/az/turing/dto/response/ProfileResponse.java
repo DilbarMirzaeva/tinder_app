@@ -1,6 +1,7 @@
 package az.turing.dto.response;
 
 import az.turing.domain.enums.Gender;
+import az.turing.domain.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,5 @@ public class ProfileResponse {
     private Gender gender;
     private String bio;
     private String location;
+    private Status status;
 }

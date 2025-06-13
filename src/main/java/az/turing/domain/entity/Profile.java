@@ -1,6 +1,7 @@
 package az.turing.domain.entity;
 
 import az.turing.domain.enums.Gender;
+import az.turing.domain.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,4 +31,5 @@ public class Profile {
 
     private String bio;
     private String location;
+    private Status status;
 }
