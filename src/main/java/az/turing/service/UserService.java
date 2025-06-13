@@ -10,4 +10,5 @@ public interface UserService {
     List<UserResponse> getAllUsers();
     UserResponse getUserById(Long id);
     void deleteUserById(Long id);
+    UserResponse getUserByName(String name);
 }

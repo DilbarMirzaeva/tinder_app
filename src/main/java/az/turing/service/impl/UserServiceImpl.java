@@ -26,11 +26,7 @@ public class UserServiceImpl implements UserService {
         if(userRepo.existsUserByUsername(user.getUsername())){
             throw new AlreadyExistsException("User with username " + user.getUsername() + " already exists");
         }
-        User userEntity = new User();
-        userEntity.setUsername(user.getUsername());
-        userEntity.setPassword(user.getPassword());
-        userEntity.setEmail(user.getEmail());
-        userEntity.setAge(user.getAge());
+        User userEntity =userMapper.toEntityFromRequest(user);
         User savedUser = userRepo.save(userEntity);
         return  userMapper.toDto(savedUser);
     }
@@ -53,5 +49,12 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("User with id " + id + " not found");
         }
         userRepo.deleteById(id);
+    }
+
+    @Override
+    public UserResponse getUserByName(String name) {
+        User user=userRepo.findByUsername(name)
+                .orElseThrow(()->new NotFoundException("User with name " + name + " not found"));
+        return  userMapper.toDto(user);
     }
 }
