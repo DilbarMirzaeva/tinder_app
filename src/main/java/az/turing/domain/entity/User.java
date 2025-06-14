@@ -2,6 +2,7 @@ package az.turing.domain.entity;
 
 import az.turing.domain.enums.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class User {
 
     @NotNull
     @Column(unique=true,nullable=false)
+    @Email
     private String email;
 
     @Column(unique=true,nullable=false)

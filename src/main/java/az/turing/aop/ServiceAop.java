@@ -26,11 +26,11 @@ public class ServiceAop {
 
     @AfterReturning(value = "allServiceImplMethods()", returning = "result")
     public void logAfterReturningMethod(JoinPoint joinPoint, Object result) {
-        log.info("Method {} | with result {}", joinPoint.getSignature().getName(), result);
+        log.info("Method: {} | with result: {}", joinPoint.getSignature().getName(), result);
     }
 
     @AfterThrowing(value = "allServiceImplMethods()", throwing = "ex")
     public void logAfterThrowingMethod(JoinPoint joinPoint, Exception ex) {
-        log.error("Method {} | with exception {}", joinPoint.getSignature().getName(), ex.getLocalizedMessage());
+        log.error("Method: {} | with exception: {}", joinPoint.getSignature().getName(), ex.getLocalizedMessage());
     }
 }

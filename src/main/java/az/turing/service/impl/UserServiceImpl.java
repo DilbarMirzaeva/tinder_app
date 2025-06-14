@@ -7,6 +7,7 @@ import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.AlreadyExistsException;
+import az.turing.exception.EmptyResultException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.UserMapper;
 import az.turing.service.UserService;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +36,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepo.findAllByStatus(Status.ACTIVE).stream()
+        List<UserResponse> list= userRepo.findAllByStatus(Status.ACTIVE).stream()
                 .map(userMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+        if (list.isEmpty()) {
+            throw new EmptyResultException("User list is empty");
+        }
+        return list;
     }
 
     @Override
