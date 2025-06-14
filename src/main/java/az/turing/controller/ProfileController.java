@@ -28,7 +28,7 @@ public class ProfileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@RequestParam Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         profileService.deleteProfileById(id);
         return ResponseEntity.noContent().build();
     }

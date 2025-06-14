@@ -6,6 +6,7 @@ import az.turing.domain.repository.ProfileRepo;
 import az.turing.dto.request.ProfileRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.exception.AlreadyDeletedException;
+import az.turing.exception.EmptyResultException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.ProfileMapper;
 import az.turing.service.ProfileService;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +40,13 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ProfileResponse> getAllProfiles() {
-        return profileRepo.findAllByStatus(Status.ACTIVE).stream()
+        List<ProfileResponse> list= profileRepo.findAllByStatus(Status.ACTIVE).stream()
                 .map(profileMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+        if(list.isEmpty()){
+            throw new EmptyResultException("Profile list is empty");
+        }
+        return list;
     }
 
     @Override
