@@ -23,7 +23,7 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<ProfileResponse> update(@RequestBody ProfileRequest profileRequest,@RequestParam Long id) {
+    public ResponseEntity<ProfileResponse> update(@RequestBody ProfileRequest profileRequest, @RequestParam Long id) {
         return ResponseEntity.ok(profileService.updateProfile(profileRequest, id));
     }
 
