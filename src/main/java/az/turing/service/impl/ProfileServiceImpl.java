@@ -57,9 +57,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public ProfileResponse updateProfile(ProfileRequest profileRequest,Long id) {
-        Profile profile=profileFindById(id);
-        Profile entity=profileMapper.toEntityFromRequest(profileRequest);
+    public ProfileResponse updateProfile(ProfileRequest profileRequest, Long id) {
+        Profile profile = profileFindById(id);
+        Profile entity = profileMapper.toEntityFromRequest(profileRequest);
         profile.setUser(entity.getUser());
         profile.setBio(profileRequest.getBio());
         profile.setGender(profileRequest.getGender());
