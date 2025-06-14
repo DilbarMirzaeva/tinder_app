@@ -53,8 +53,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileResponse updateProfile(ProfileRequest profileRequest) {
-        Profile profile=profileMapper.toEntityFromRequest(profileRequest);
+    public ProfileResponse updateProfile(ProfileRequest profileRequest,Long id) {
+        Profile profile=profileFindById(id);
+        Profile entity=profileMapper.toEntityFromRequest(profileRequest);
+        profile.setUser(entity.getUser());
+        profile.setBio(profileRequest.getBio());
+        profile.setGender(profileRequest.getGender());
+        profile.setLocation(profileRequest.getLocation());
+        profile.setPhotoUrl(profileRequest.getPhotoUrl());
         profile.setStatus(Status.ACTIVE);
         Profile savedProfile = profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);

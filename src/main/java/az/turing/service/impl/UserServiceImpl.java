@@ -65,11 +65,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UserRequest userRequest) {
-        User user=userMapper.toEntityFromRequest(userRequest);
+    public UserResponse updateUser(UserRequest userRequest,Long id) {
+        User user =userFindById(id);
+        user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+        user.setAge(userRequest.getAge());
         user.setStatus(Status.ACTIVE);
         User savedUser = userRepo.save(user);
-        return  userMapper.toDto(savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     public User userFindById(Long id) {
