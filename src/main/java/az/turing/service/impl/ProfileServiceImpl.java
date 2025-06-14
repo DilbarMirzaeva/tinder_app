@@ -9,6 +9,7 @@ import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.ProfileMapper;
 import az.turing.service.ProfileService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepo profileRepo;
 
     @Override
+    @Transactional
     public ProfileResponse saveProfile(ProfileRequest profileRequest) {
         Profile profile = profileMapper.toEntityFromRequest(profileRequest);
         profile.setStatus(Status.ACTIVE);
@@ -44,6 +46,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public void deleteProfileById(Long id) {
         Profile profile = profileFindById(id);
         if (profile.getStatus() == Status.DELETED) {
@@ -53,6 +56,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
     public ProfileResponse updateProfile(ProfileRequest profileRequest,Long id) {
         Profile profile=profileFindById(id);
         Profile entity=profileMapper.toEntityFromRequest(profileRequest);
