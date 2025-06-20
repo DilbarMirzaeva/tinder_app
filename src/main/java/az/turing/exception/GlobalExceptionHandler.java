@@ -1,5 +1,6 @@
 package az.turing.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -49,18 +50,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(EmptyResultException.class)
-    public ResponseEntity<GlobalResponse> emptyResultHandler(EmptyResultException ex){
-        return ResponseEntity.status(HttpStatus.OK).body(
-                GlobalResponse.builder()
-                        .message(ex.getMessage())
-                        .error(ErrorMessage.EMPTY_RESULT)
-                        .timestamp(LocalDateTime.now())
-                        .uuid(UUID.randomUUID())
-                        .build()
-        );
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalResponse> methodArgumentNotValidHandler(MethodArgumentNotValidException ex){
         StringBuilder errors = new StringBuilder();
@@ -77,6 +66,18 @@ public class GlobalExceptionHandler {
                         .error(ErrorMessage.METHOD_ARGUMENT_NOT_VALID)
                         .timestamp(LocalDateTime.now())
                         .uuid(UUID.randomUUID())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<GlobalResponse> dataIntegrityViolationHandler(DataIntegrityViolationException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                GlobalResponse.builder()
+                        .message(ex.getMessage())
+                        .uuid(UUID.randomUUID())
+                        .timestamp(LocalDateTime.now())
+                        .error(ErrorMessage.DATA_INTEGRITY_VIOLATION)
                         .build()
         );
     }
