@@ -10,13 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileRequest {
-
-    @NotNull
-    @Valid
-    private
-    UserRequest userRequest;
-
+public class ProfileUpdateRequest {
     private String photoUrl;
 
     @NotNull(message = "gender cannot be empty")

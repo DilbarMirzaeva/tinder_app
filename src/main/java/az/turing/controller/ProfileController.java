@@ -1,11 +1,14 @@
 package az.turing.controller;
 
-import az.turing.dto.request.ProfileRequest;
+import az.turing.dto.request.ProfileCreateRequest;
+import az.turing.dto.request.ProfileUpdateRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.service.ProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,17 +16,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
+@Validated
 public class ProfileController {
 
     private final ProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<ProfileResponse> save(@RequestBody ProfileRequest profileRequest) {
+    public ResponseEntity<ProfileResponse> save(@Valid @RequestBody ProfileCreateRequest profileRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(profileService.saveProfile(profileRequest));
     }
 
     @PutMapping
-    public ResponseEntity<ProfileResponse> update(@RequestBody ProfileRequest profileRequest, @RequestParam Long id) {
+    public ResponseEntity<ProfileResponse> update(@Valid @RequestBody ProfileUpdateRequest profileRequest, @RequestParam Long id) {
         return ResponseEntity.ok(profileService.updateProfile(profileRequest, id));
     }
 

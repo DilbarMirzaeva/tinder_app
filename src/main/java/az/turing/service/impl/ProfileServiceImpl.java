@@ -1,15 +1,20 @@
 package az.turing.service.impl;
 
 import az.turing.domain.entity.Profile;
+import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
 import az.turing.domain.repository.ProfileRepo;
-import az.turing.dto.request.ProfileRequest;
+import az.turing.domain.repository.UserRepo;
+import az.turing.dto.request.ProfileCreateRequest;
+import az.turing.dto.request.ProfileUpdateRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.exception.AlreadyDeletedException;
-import az.turing.exception.EmptyResultException;
+import az.turing.exception.AlreadyExistsException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.ProfileMapper;
+import az.turing.mapper.UserMapper;
 import az.turing.service.ProfileService;
+import az.turing.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +27,16 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileMapper profileMapper;
     private final ProfileRepo profileRepo;
+    private final UserService userService;
+    private final UserRepo userRepo;
+    private final UserMapper userMapper;
 
     @Override
     @Transactional
-    public ProfileResponse saveProfile(ProfileRequest profileRequest) {
+    public ProfileResponse saveProfile(ProfileCreateRequest profileRequest) {
+        User user=userService.saveAndReturnUser(profileRequest.getUserRequest());
         Profile profile = profileMapper.toEntityFromRequest(profileRequest);
+        profile.setUser(user);
         profile.setStatus(Status.ACTIVE);
         Profile savedProfile = profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);
@@ -40,13 +50,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ProfileResponse> getAllProfiles() {
-        List<ProfileResponse> list= profileRepo.findAllByStatus(Status.ACTIVE).stream()
+        return profileRepo.findAllByStatus(Status.ACTIVE).stream()
                 .map(profileMapper::toDto)
                 .toList();
-        if(list.isEmpty()){
-            throw new EmptyResultException("Profile list is empty");
-        }
-        return list;
     }
 
     @Override
@@ -56,15 +62,16 @@ public class ProfileServiceImpl implements ProfileService {
         if (profile.getStatus() == Status.DELETED) {
             throw new AlreadyDeletedException("Profile with id: " + id + " already deleted");
         }
-        profileRepo.delete(profile);
+        profile.setStatus(Status.DELETED);
+        profile.getUser().setStatus(Status.DELETED);
+        profileRepo.save(profile);
     }
 
     @Override
     @Transactional
-    public ProfileResponse updateProfile(ProfileRequest profileRequest, Long id) {
+    public ProfileResponse updateProfile(ProfileUpdateRequest profileRequest, Long id) {
         Profile profile = profileFindById(id);
-        Profile entity = profileMapper.toEntityFromRequest(profileRequest);
-        profile.setUser(entity.getUser());
+
         profile.setBio(profileRequest.getBio());
         profile.setGender(profileRequest.getGender());
         profile.setLocation(profileRequest.getLocation());
@@ -78,5 +85,4 @@ public class ProfileServiceImpl implements ProfileService {
         return profileRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile with id: " + id + " not found"));
     }
-
 }

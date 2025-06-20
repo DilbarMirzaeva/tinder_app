@@ -7,7 +7,6 @@ import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.AlreadyExistsException;
-import az.turing.exception.EmptyResultException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.UserMapper;
 import az.turing.service.UserService;
@@ -15,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static az.turing.domain.enums.Status.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -25,24 +26,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse saveUser(UserRequest user) {
-        if(userRepo.existsUserByUsername(user.getUsername())){
+        if(userRepo.existsByUsernameAndStatus(user.getUsername(),ACTIVE)){
             throw new AlreadyExistsException("User with username " + user.getUsername() + " already exists");
         }
         User userEntity =userMapper.toEntityFromRequest(user);
-        userEntity.setStatus(Status.ACTIVE);
+        userEntity.setStatus(ACTIVE);
         User savedUser = userRepo.save(userEntity);
         return  userMapper.toDto(savedUser);
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        List<UserResponse> list= userRepo.findAllByStatus(Status.ACTIVE).stream()
+        return userRepo.findAllByStatus(ACTIVE).stream()
                 .map(userMapper::toDto)
                 .toList();
-        if (list.isEmpty()) {
-            throw new EmptyResultException("User list is empty");
-        }
-        return list;
     }
 
     @Override
@@ -75,7 +72,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
         user.setAge(userRequest.getAge());
-        user.setStatus(Status.ACTIVE);
         User savedUser = userRepo.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -84,4 +80,15 @@ public class UserServiceImpl implements UserService {
         return userRepo.findById(id)
                 .orElseThrow(()->new NotFoundException("User with id " + id + " not found"));
     }
+
+    public User saveAndReturnUser(UserRequest userRequest) {
+        if(userRepo.existsByUsernameAndStatus(userRequest.getUsername(), ACTIVE) ){
+            throw new AlreadyExistsException("User with username " + userRequest.getUsername() + " already have a profile");
+        }
+        User user=userMapper.toEntityFromRequest(userRequest);
+        user.setStatus(ACTIVE);
+        return userRepo.save(user);
+    }
+
+
 }
