@@ -1,7 +1,7 @@
 package az.turing.dto.request;
 
 import az.turing.domain.enums.Status;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StatusUpdateRequest {
 
-    @NotBlank(message = "status can't be empty")
+    @NotNull
     private Status status;
 }
