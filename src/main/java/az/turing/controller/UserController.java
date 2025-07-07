@@ -25,13 +25,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(userRequest));
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<UserResponse> update(@Valid @RequestBody UserRequest userRequest,@RequestParam Long id) {
         return ResponseEntity.ok(userService.updateUser(userRequest, id));
     }
 
-    @PatchMapping
-    public ResponseEntity<UserResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request,Long id){
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<UserResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request,@PathVariable Long id){
         return ResponseEntity.ok(userService.updateUserStatus(request, id));
     }
 
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();

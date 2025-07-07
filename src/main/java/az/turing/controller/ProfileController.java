@@ -27,17 +27,17 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(profileService.saveProfile(profileRequest));
     }
 
-    @PutMapping 
+    @PutMapping ("/update")
     public ResponseEntity<ProfileResponse> update(@Valid @RequestBody ProfileUpdateRequest profileRequest, @RequestParam Long id) {
         return ResponseEntity.ok(profileService.updateProfile(profileRequest, id));
     }
 
-    @PatchMapping
-    public ResponseEntity<ProfileResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request, Long id){
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<ProfileResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request,@PathVariable Long id){
         return ResponseEntity.ok(profileService.updateProfileStatus(request, id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         profileService.deleteProfileById(id);
         return ResponseEntity.noContent().build();
