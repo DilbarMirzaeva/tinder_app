@@ -7,6 +7,7 @@ import az.turing.domain.repository.ProfileRepo;
 import az.turing.domain.repository.UserRepo;
 import az.turing.dto.request.ProfileCreateRequest;
 import az.turing.dto.request.ProfileUpdateRequest;
+import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.exception.AlreadyDeletedException;
 import az.turing.exception.AlreadyExistsException;
@@ -77,7 +78,19 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setLocation(profileRequest.getLocation());
         profile.setPhotoUrl(profileRequest.getPhotoUrl());
         profile.setStatus(Status.ACTIVE);
+
         Profile savedProfile = profileRepo.save(profile);
+        return profileMapper.toDto(savedProfile);
+    }
+
+    @Override
+    public ProfileResponse updateProfileStatus(StatusUpdateRequest request, Long id) {
+        Profile profile=profileFindById(id);
+
+        profile.setStatus(request.getStatus());
+        profile.getUser().setStatus(request.getStatus());
+
+        Profile savedProfile=profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);
     }
 

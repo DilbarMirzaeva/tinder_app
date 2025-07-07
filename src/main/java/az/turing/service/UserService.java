@@ -1,6 +1,7 @@
 package az.turing.service;
 
 import az.turing.domain.entity.User;
+import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 
@@ -14,4 +15,5 @@ public interface UserService {
     UserResponse getUserByName(String name);
     UserResponse updateUser(UserRequest user,Long id);
     User saveAndReturnUser(UserRequest user);
+    UserResponse updateUserStatus(StatusUpdateRequest request, Long id);
 }

@@ -3,6 +3,7 @@ package az.turing.service.impl;
 import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
 import az.turing.domain.repository.UserRepo;
+import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 import az.turing.exception.AlreadyDeletedException;
@@ -73,6 +74,20 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userRequest.getPassword());
         user.setAge(userRequest.getAge());
         User savedUser = userRepo.save(user);
+        return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public UserResponse updateUserStatus(StatusUpdateRequest request, Long id) {
+        User user=userFindById(id);
+        user.setStatus(request.getStatus());
+
+        User savedUser=userRepo.save(user);
+
+        if(savedUser.getProfile()!=null){
+            savedUser.getProfile().setStatus(request.getStatus());
+        }
+
         return userMapper.toDto(savedUser);
     }
 
