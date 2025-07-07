@@ -4,16 +4,13 @@ import az.turing.domain.entity.Profile;
 import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
 import az.turing.domain.repository.ProfileRepo;
-import az.turing.domain.repository.UserRepo;
 import az.turing.dto.request.ProfileCreateRequest;
 import az.turing.dto.request.ProfileUpdateRequest;
 import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.exception.AlreadyDeletedException;
-import az.turing.exception.AlreadyExistsException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.ProfileMapper;
-import az.turing.mapper.UserMapper;
 import az.turing.service.ProfileService;
 import az.turing.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,13 +26,11 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileMapper profileMapper;
     private final ProfileRepo profileRepo;
     private final UserService userService;
-    private final UserRepo userRepo;
-    private final UserMapper userMapper;
 
     @Override
     @Transactional
     public ProfileResponse saveProfile(ProfileCreateRequest profileRequest) {
-        User user=userService.saveAndReturnUser(profileRequest.getUserRequest());
+        User user = userService.saveAndReturnUser(profileRequest.getUserRequest());
         Profile profile = profileMapper.toEntityFromRequest(profileRequest);
         profile.setUser(user);
         profile.setStatus(Status.ACTIVE);
@@ -85,12 +80,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileResponse updateProfileStatus(StatusUpdateRequest request, Long id) {
-        Profile profile=profileFindById(id);
+        Profile profile = profileFindById(id);
 
         profile.setStatus(request.getStatus());
         profile.getUser().setStatus(request.getStatus());
 
-        Profile savedProfile=profileRepo.save(profile);
+        Profile savedProfile = profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);
     }
 
