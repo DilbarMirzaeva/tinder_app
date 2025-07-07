@@ -2,7 +2,6 @@ package az.turing.domain.repository;
 
 import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
-import az.turing.dto.response.UserResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,4 +15,5 @@ public interface UserRepo extends JpaRepository<User,Long> {
     List<User> findAllByStatus(Status status);
 
     boolean existsByUsernameAndStatus(String username, Status status);
+
 }

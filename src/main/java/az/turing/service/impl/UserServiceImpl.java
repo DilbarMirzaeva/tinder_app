@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
             throw new AlreadyDeletedException("User with id " + id + " already deleted");
         }
         user.setStatus(Status.DELETED);
+        user.getProfile().setStatus(Status.DELETED);
         userRepo.save(user);
     }
 
@@ -80,14 +81,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUserStatus(StatusUpdateRequest request, Long id) {
         User user=userFindById(id);
-        user.setStatus(request.getStatus());
+        Status status=request.getStatus();
 
-        User savedUser=userRepo.save(user);
-
-        if(savedUser.getProfile()!=null){
-            savedUser.getProfile().setStatus(request.getStatus());
+        user.setStatus(status);
+        if(user.getProfile()!=null){
+            user.getProfile().setStatus(status);
         }
 
+        User savedUser=userRepo.save(user);
         return userMapper.toDto(savedUser);
     }
 
@@ -95,15 +96,5 @@ public class UserServiceImpl implements UserService {
         return userRepo.findById(id)
                 .orElseThrow(()->new NotFoundException("User with id " + id + " not found"));
     }
-
-    public User saveAndReturnUser(UserRequest userRequest) {
-        if(userRepo.existsByUsernameAndStatus(userRequest.getUsername(), ACTIVE) ){
-            throw new AlreadyExistsException("User with username " + userRequest.getUsername() + " already have a profile");
-        }
-        User user=userMapper.toEntityFromRequest(userRequest);
-        user.setStatus(ACTIVE);
-        return userRepo.save(user);
-    }
-
 
 }

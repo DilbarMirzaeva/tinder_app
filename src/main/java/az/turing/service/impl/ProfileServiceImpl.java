@@ -4,20 +4,28 @@ import az.turing.domain.entity.Profile;
 import az.turing.domain.entity.User;
 import az.turing.domain.enums.Status;
 import az.turing.domain.repository.ProfileRepo;
+import az.turing.domain.repository.UserRepo;
 import az.turing.dto.request.ProfileCreateRequest;
 import az.turing.dto.request.ProfileUpdateRequest;
 import az.turing.dto.request.StatusUpdateRequest;
+import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.exception.AlreadyDeletedException;
+import az.turing.exception.AlreadyExistsException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.ProfileMapper;
+import az.turing.mapper.UserMapper;
 import az.turing.service.ProfileService;
-import az.turing.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static az.turing.domain.enums.Status.ACTIVE;
+import static az.turing.domain.enums.Status.DELETED;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +33,39 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileMapper profileMapper;
     private final ProfileRepo profileRepo;
-    private final UserService userService;
+    private final UserRepo userRepo;
+    private final UserMapper userMapper;
 
     @Override
     @Transactional
     public ProfileResponse saveProfile(ProfileCreateRequest profileRequest) {
-        User user = userService.saveAndReturnUser(profileRequest.getUserRequest());
+        UserRequest userRequest=profileRequest.getUserRequest();
+        Optional<User> userOpt=userRepo.findByUsername(userRequest.getUsername());
+
+        User userEntity;
+        if(userOpt.isPresent()){
+            userEntity=userOpt.get();
+            if(userEntity.getProfile()!=null){
+                throw new AlreadyExistsException("User with username " + userRequest.getUsername() + " already have a profile");
+            }
+
+            if(!Objects.equals(userEntity.getAge(),userRequest.getAge())){
+                userEntity.setAge(userRequest.getAge());
+            }
+
+            if (userEntity.getStatus()==DELETED){
+                userEntity.setStatus(ACTIVE);
+            }
+        }else {
+            userEntity=userMapper.toEntityFromRequest(userRequest);
+            userEntity.setStatus(ACTIVE);
+            userRepo.save(userEntity);
+        }
+
         Profile profile = profileMapper.toEntityFromRequest(profileRequest);
-        profile.setUser(user);
+        profile.setUser(userEntity);
         profile.setStatus(Status.ACTIVE);
+
         Profile savedProfile = profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);
     }
@@ -55,11 +87,11 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public void deleteProfileById(Long id) {
         Profile profile = profileFindById(id);
-        if (profile.getStatus() == Status.DELETED) {
+        if (profile.getStatus() == DELETED) {
             throw new AlreadyDeletedException("Profile with id: " + id + " already deleted");
         }
-        profile.setStatus(Status.DELETED);
-        profile.getUser().setStatus(Status.DELETED);
+        profile.setStatus(DELETED);
+        profile.getUser().setStatus(DELETED);
         profileRepo.save(profile);
     }
 
@@ -81,9 +113,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileResponse updateProfileStatus(StatusUpdateRequest request, Long id) {
         Profile profile = profileFindById(id);
+        Status status=request.getStatus();
 
-        profile.setStatus(request.getStatus());
-        profile.getUser().setStatus(request.getStatus());
+        profile.setStatus(status);
+        profile.getUser().setStatus(status);
 
         Profile savedProfile = profileRepo.save(profile);
         return profileMapper.toDto(savedProfile);
