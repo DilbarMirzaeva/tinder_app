@@ -1,5 +1,6 @@
 package az.turing.controller;
 
+import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.request.UserRequest;
 import az.turing.dto.response.UserResponse;
 import az.turing.service.UserService;
@@ -27,6 +28,11 @@ public class UserController {
     @PutMapping
     public ResponseEntity<UserResponse> update(@Valid @RequestBody UserRequest userRequest,@RequestParam Long id) {
         return ResponseEntity.ok(userService.updateUser(userRequest, id));
+    }
+
+    @PatchMapping
+    public ResponseEntity<UserResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request,Long id){
+        return ResponseEntity.ok(userService.updateUserStatus(request, id));
     }
 
     @GetMapping("/all")

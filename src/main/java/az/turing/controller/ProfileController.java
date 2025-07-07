@@ -2,6 +2,7 @@ package az.turing.controller;
 
 import az.turing.dto.request.ProfileCreateRequest;
 import az.turing.dto.request.ProfileUpdateRequest;
+import az.turing.dto.request.StatusUpdateRequest;
 import az.turing.dto.response.ProfileResponse;
 import az.turing.service.ProfileService;
 import jakarta.validation.Valid;
@@ -26,9 +27,14 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(profileService.saveProfile(profileRequest));
     }
 
-    @PutMapping
+    @PutMapping 
     public ResponseEntity<ProfileResponse> update(@Valid @RequestBody ProfileUpdateRequest profileRequest, @RequestParam Long id) {
         return ResponseEntity.ok(profileService.updateProfile(profileRequest, id));
+    }
+
+    @PatchMapping
+    public ResponseEntity<ProfileResponse> updateStatus(@Valid @RequestBody StatusUpdateRequest request, Long id){
+        return ResponseEntity.ok(profileService.updateProfileStatus(request, id));
     }
 
     @DeleteMapping("/{id}")
