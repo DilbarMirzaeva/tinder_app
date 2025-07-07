@@ -40,4 +40,7 @@ public class User {
     @Column(nullable = false)
     private Status status;
 
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Profile profile;
+
 }
