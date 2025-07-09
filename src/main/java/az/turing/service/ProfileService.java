@@ -15,4 +15,5 @@ public interface ProfileService {
     void deleteProfileById(Long id);
     ProfileResponse updateProfile(ProfileUpdateRequest profileRequest, Long id);
     ProfileResponse updateProfileStatus(StatusUpdateRequest request, Long id);
+    ProfileResponse getProfileByUsername(String username);
 }

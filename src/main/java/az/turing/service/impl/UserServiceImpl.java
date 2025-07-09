@@ -74,6 +74,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
         user.setAge(userRequest.getAge());
+
         User savedUser = userRepo.save(user);
         return userMapper.toDto(savedUser);
     }
