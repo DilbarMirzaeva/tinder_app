@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 public class LikeRequest {
 
     @NotBlank(message = "username cannot be empty")
+    private String fromUsername;
+
+    @NotBlank(message = "username cannot be empty")
     private String likedUsername;
 
 }
