@@ -4,10 +4,11 @@ import az.turing.domain.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,6 +16,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "users")
 @SuperBuilder
+@ToString(exclude = {"likesSent","likesReceived"})
+@EqualsAndHashCode(exclude = {"likesSent","likesReceived"})
 public class User {
 
     @Id
@@ -42,5 +45,11 @@ public class User {
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Profile profile;
+
+    @OneToMany(mappedBy = "fromUser",cascade = CascadeType.ALL)
+    private List<Like> likesSent=new ArrayList<>();
+
+    @OneToMany(mappedBy = "toUser",cascade = CascadeType.ALL)
+    private List<Like> likesReceived=new ArrayList<>();
 
 }

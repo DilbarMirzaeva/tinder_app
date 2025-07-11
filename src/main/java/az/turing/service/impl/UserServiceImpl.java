@@ -62,8 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserByName(String name) {
-        User user=userRepo.findByUsername(name)
-                .orElseThrow(()->new NotFoundException("User with name " + name + " not found"));
+        User user=userFindByUsername(name);
         return  userMapper.toDto(user);
     }
 
@@ -96,6 +95,11 @@ public class UserServiceImpl implements UserService {
     public User userFindById(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(()->new NotFoundException("User with id " + id + " not found"));
+    }
+
+    public User userFindByUsername(String username) {
+        return userRepo.findByUsername(username)
+                .orElseThrow(()->new NotFoundException("User with username " + username + " not found"));
     }
 
 }
