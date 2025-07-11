@@ -9,7 +9,6 @@ import java.util.List;
 public class MatchServiceImpl implements MatchService {
     @Override
     public void createMatch(User fromUser, User toUser) {
-
     }
 
     @Override
