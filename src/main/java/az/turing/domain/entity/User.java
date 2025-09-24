@@ -47,9 +47,11 @@ public class User {
     private Profile profile;
 
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Like> likesSent = new ArrayList<>();
 
     @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Like> likesReceived = new ArrayList<>();
 
 }
