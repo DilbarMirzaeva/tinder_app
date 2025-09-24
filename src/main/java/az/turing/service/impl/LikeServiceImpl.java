@@ -1,8 +1,10 @@
 package az.turing.service.impl;
 
 import az.turing.domain.entity.Like;
+import az.turing.domain.entity.Match;
 import az.turing.domain.entity.User;
 import az.turing.domain.repository.LikeRepo;
+import az.turing.domain.repository.MatchRepo;
 import az.turing.dto.request.LikeRequest;
 import az.turing.dto.response.LikeResponse;
 import az.turing.exception.NotFoundException;
@@ -22,6 +24,7 @@ public class LikeServiceImpl implements LikeService {
     private final LikeRepo likeRepo;
     private final UserServiceImpl userService;
     private final LikeMapper likeMapper;
+    private final MatchRepo matchRepo;
 
     @Override
     public LikeResponse like(LikeRequest request) {
@@ -35,6 +38,16 @@ public class LikeServiceImpl implements LikeService {
                 .build();
 
         Like savedLike=likeRepo.save(like);
+        
+        boolean reciprocalLikesExist=likeRepo.existsByFromUserAndToUser(toUser,fromUser);
+        if(reciprocalLikesExist){
+            Match createMatch=Match.builder()
+                    .user1(fromUser)
+                    .user2(toUser)
+                    .matchedAt(LocalDateTime.now())
+                    .build();
+            matchRepo.save(createMatch);
+        }
         return likeMapper.toDto(savedLike);
     }
 
