@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface LikeMapper extends EntityMapper<Like, LikeResponse, LikeRequest> {
-    @Mapping(target = "likeSent",ignore = true)
-    @Mapping(target = "likeReceived",ignore = true)
+//    @Mapping(target = "likeSent",ignore = true)
+//    @Mapping(target = "likeReceived",ignore = true)
     LikeResponse toDto(Like like);
     Like toEntityFromResponse(LikeResponse likeResponse);
 }
