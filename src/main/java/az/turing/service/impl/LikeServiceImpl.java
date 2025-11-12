@@ -7,6 +7,7 @@ import az.turing.domain.repository.LikeRepo;
 import az.turing.domain.repository.MatchRepo;
 import az.turing.dto.request.LikeRequest;
 import az.turing.dto.response.LikeResponse;
+import az.turing.exception.AlreadyExistsException;
 import az.turing.exception.NotFoundException;
 import az.turing.mapper.LikeMapper;
 import az.turing.service.LikeService;
@@ -31,6 +32,11 @@ public class LikeServiceImpl implements LikeService {
         User toUser=findUser(request.getLikedUsername());
         User fromUser=findUser(request.getFromUsername());
 
+        boolean alreadyLiked=likeRepo.existsByFromUserAndToUser(toUser,fromUser);
+        if(alreadyLiked){
+            throw new AlreadyExistsException("You already like this user!");
+        }
+
         Like like=Like.builder()
                 .fromUser(fromUser)
                 .toUser(toUser)
@@ -38,7 +44,7 @@ public class LikeServiceImpl implements LikeService {
                 .build();
 
         Like savedLike=likeRepo.save(like);
-        
+
         boolean reciprocalLikesExist=likeRepo.existsByFromUserAndToUser(toUser,fromUser);
         if(reciprocalLikesExist){
             Match createMatch=Match.builder()
